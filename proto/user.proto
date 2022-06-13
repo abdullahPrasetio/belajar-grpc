@@ -1,0 +1,112 @@
+syntax ="proto3";
+package user;
+
+option go_package="./user";
+
+import "google/api/annotations.proto";
+import "google/protobuf/Empty.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "google/api/field_behavior.proto";
+
+enum UserRole {
+    Student=0;
+    Admin=1;
+}
+message UserRegister{
+    string first_name = 2 [json_name = "first_name",(google.api.field_behavior) = REQUIRED];
+    string last_name = 3 [json_name = "last_name",(google.api.field_behavior) = REQUIRED];
+    string email = 4[(google.api.field_behavior) = REQUIRED];
+    string password = 5[(google.api.field_behavior) = REQUIRED];
+    string phone = 6[(google.api.field_behavior) = REQUIRED];
+}
+
+
+message UserWithoutPassword{
+    int64 id = 1;
+    string first_name = 2 [json_name = "first_name"];
+    string last_name = 3 [json_name = "last_name"];
+    string email = 4;
+    string phone = 5;
+    UserRole role = 6;
+}
+
+message NullString{
+    string string=1;
+    bool valid=2;
+}
+
+message UserId{
+    int64 id = 1;
+}
+
+message UserList{
+    repeated UserWithoutPassword list = 1;
+}
+
+message ResponseUserData{
+    string status = 1;
+    string message = 2;
+    repeated UserWithoutPassword data= 3;
+}
+
+// message ResponseError{
+//     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {};
+//     string status= 1;
+//     string message = 2;
+//     repeated ErrorValidate data= 3;
+// }
+
+// message ErrorValidate{
+//     map<string,FieldError> errors=1;
+// }
+
+// message FieldError{
+//     repeated string data= 1;
+// }
+
+
+service Users{
+    rpc Register(UserRegister) returns (ResponseUserData){
+        option (google.api.http)={
+            post : "/api/v1/register",
+            body : "*",
+        };
+        // option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+        //     responses: {
+        //         key:"default";
+        //         value:{
+        //             description: "An unexpected error response. 2",
+        //             schema: {
+        //                 json_schema:{
+        //                     type:6;
+        //                     ref:"#/definitions/userResponseError";
+        //                 }
+                        
+        //             }
+        //         }
+        //     }
+        // };
+    }
+    rpc List(google.protobuf.Empty) returns (ResponseUserData){
+        option (google.api.http)={
+            get : "/api/v1/users",
+        };
+        // option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+        //     responses: {
+        //         key:"default";
+        //         value:{
+        //             description: "An unexpected error response. 2",
+        //             schema: {
+        //                 json_schema:{
+        //                     type:6;
+        //                     ref:"#/definitions/userResponseError";
+        //                 }
+                        
+        //             }
+        //         }
+        //     }
+        // };
+    } 
+}
+
+
